@@ -15491,8 +15491,7 @@ dhd_convert_memdump_type_to_str(uint32 type, char *buf)
 	buf[strlen(type_str)] = 0;
 }
 
-int
-write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
+int write_dump_to_file(dhd_pub_t *dhd, uint8 *buf, int size, char *fname)
 {
 	int ret = 0;
 	char memdump_path[128];
@@ -16817,12 +16816,12 @@ dhd_mem_dump(void *handle, void *event_info, u8 event)
 		DHD_ERROR(("%s: dump is NULL\n", __FUNCTION__));
 		return;
 	}
-
+#ifdef DHD_DEBUG
 	if (write_dump_to_file(&dhd->pub, dump->buf, dump->bufsize, "mem_dump")) {
 		DHD_ERROR(("%s: writing SoC_RAM dump to the file failed\n", __FUNCTION__));
 		dhd->pub.memdump_success = FALSE;
 	}
-
+#endif
 	if (dhd->pub.memdump_enabled == DUMP_MEMFILE_BUGON &&
 #ifdef DHD_LOG_DUMP
 		dhd->pub.memdump_type != DUMP_TYPE_BY_SYSDUMP &&
@@ -16870,7 +16869,7 @@ dhd_sssr_dump(void *handle, void *event_info, u8 event)
 			"sssr_core", i, "before_SR");
 		snprintf(after_sr_dump, sizeof(after_sr_dump), "%s_%d_%s",
 			"sssr_core", i, "after_SR");
-
+#ifdef DHD_DEBUG
 		if (dhdp->sssr_d11_before[i] && dhdp->sssr_d11_outofreset[i]) {
 			if (write_dump_to_file(dhdp, (uint8 *)dhdp->sssr_d11_before[i],
 				dhdp->sssr_reg_info.mac_regs[i].sr_size, before_sr_dump)) {
@@ -16902,7 +16901,7 @@ dhd_sssr_dump(void *handle, void *event_info, u8 event)
 				__FUNCTION__));
 		}
 	}
-
+#endif
 }
 
 void
